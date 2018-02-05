@@ -6,7 +6,7 @@ import com.github.ccob.bittrex4j.dao.Fill;
 import java.io.IOException;
 import java.util.Arrays;
 
-public class ShowRealTimeFills {
+public class BittrexExample {
 
     public static void main(String[] args) throws IOException {
 

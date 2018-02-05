@@ -15,31 +15,28 @@
  *    limitations under the License. 
  *    
  *******************************************************************************/
-package com.ktoy.exchange.api.manager;
+package com.ktoy.exchange.api.commands;
 
 import com.ktoy.exchange.api.ApiBroker;
-import com.ktoy.exchange.api.entity.Trade;
+import com.ktoy.exchange.api.entity.symbol.ChannelSymbol;
+import org.json.JSONObject;
 
-public class TradeManager extends SimpleCallbackManager<Trade>{
+public class BitfinexSubscribeTradeCommand extends AbstractAPICommand {
 
-	/**
-	 * The bitfinex API broker
-	 */
-	private final ApiBroker apiBroker;
+	private final ChannelSymbol symbol;
 
-	public TradeManager(final ApiBroker apiBroker) {
-		super(apiBroker.getExecutorService());
-		this.apiBroker = apiBroker;
+	public BitfinexSubscribeTradeCommand(final ChannelSymbol symbol) {
+		this.symbol = symbol;
 	}
-	
-	/**
-	 * Update a exchange order
-	 * @param trade
-	 */
-	public void updateTrade(final Trade trade) {
-		//trade.setApikey(apiBroker.getApiKey());
-		notifyCallbacks(trade);
+
+	@Override
+	public String getCommand(final ApiBroker apiBroker) {
+		final JSONObject subscribeJson = new JSONObject();
+		subscribeJson.put("event", "subscribe");
+		subscribeJson.put("channel", "trades");
+		subscribeJson.put("symbol", symbol.toSymbolString());
+				
+		return subscribeJson.toString();
 	}
-	
+
 }
-	

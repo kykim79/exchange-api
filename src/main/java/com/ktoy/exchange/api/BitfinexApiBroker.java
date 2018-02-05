@@ -24,9 +24,7 @@ import com.ktoy.exchange.api.callback.channel.*;
 import com.ktoy.exchange.api.callback.command.*;
 import com.ktoy.exchange.api.commands.*;
 import com.ktoy.exchange.api.entity.*;
-import com.ktoy.exchange.api.entity.symbol.BitfinexCandlestickSymbol;
-import com.ktoy.exchange.api.entity.symbol.BitfinexCurrencyPair;
-import com.ktoy.exchange.api.entity.symbol.ChannelSymbol;
+import com.ktoy.exchange.api.entity.symbol.*;
 import com.ktoy.exchange.api.manager.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -36,10 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 import java.net.URI;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -466,7 +461,7 @@ public class BitfinexApiBroker implements Closeable, ApiBroker {
 	 * @param jsonArray
 	 * @throws APIException
 	 */
-	private void handleChannelData(final JSONArray jsonArray) {
+	private void handleChannelData(final JSONArray jsonArray)  {
 		final int channel = jsonArray.getInt(0);
 		final ChannelSymbol channelSymbol = getFromChannelSymbolMap(channel);
 
@@ -478,12 +473,23 @@ public class BitfinexApiBroker implements Closeable, ApiBroker {
 		
 		if(jsonArray.get(1) instanceof String) {
 			final String value = jsonArray.getString(1);
-			
-			if("hb".equals(value)) {
-				quoteManager.updateChannelHeartbeat(channelSymbol);		
+
+
+			if(channelHandler.containsKey(value)) {
+				if("hb".equals(value)) {
+					quoteManager.updateChannelHeartbeat(channelSymbol);
+				} else {
+					try {
+						APICallbackHandler callbackHandler = channelHandler.get(value);
+						callbackHandler.handleChannelData(this, jsonArray);
+					} catch (APIException e) {
+						logger.error("Got exception while handling callback", e);
+					}
+				}
 			} else {
 				logger.error("Unable to process: {}", jsonArray);
 			}
+
 		} else {	
 			final JSONArray subarray = jsonArray.getJSONArray(1);			
 
@@ -497,9 +503,13 @@ public class BitfinexApiBroker implements Closeable, ApiBroker {
 				} else if(channelSymbol instanceof OrderbookConfiguration) {
 					final BitfinexOrderbookHandler handler = new BitfinexOrderbookHandler();
 					handler.handleChannelData(this, channelSymbol, subarray);
-				} else if(channelSymbol instanceof ChannelSymbol) {
+				} else if(channelSymbol instanceof BitfinexTickerSymbol) {
 					final ChannelCallbackHandler handler = new BitfinexTickHandler();
 					handler.handleChannelData(this, channelSymbol, subarray);
+				} else if(channelSymbol instanceof BitfinexTradesSymbol) {
+//					final APICallbackHandler handler = new TradeHandler();
+//					handler.handleChannelData(this, jsonArray);
+					logger.info("ignored");
 				} else {
 					logger.error("Unknown stream type: {}", channelSymbol);
 				}

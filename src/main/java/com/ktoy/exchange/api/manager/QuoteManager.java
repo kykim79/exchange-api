@@ -20,6 +20,7 @@ package com.ktoy.exchange.api.manager;
 import com.ktoy.exchange.api.ApiBroker;
 import com.ktoy.exchange.api.commands.AbstractAPICommand;
 import com.ktoy.exchange.api.entity.APIException;
+import com.ktoy.exchange.api.entity.Trade;
 import com.ktoy.exchange.api.entity.symbol.ChannelSymbol;
 import org.ta4j.core.Tick;
 
@@ -51,6 +52,11 @@ public class QuoteManager {
 	 * The Candlestick callbacks
 	 */
 	private final BiConsumerCallbackManager<ChannelSymbol, Tick> candleCallbacks;
+
+	/**
+	 * The Trades callbacks
+	 */
+	private final BiConsumerCallbackManager<ChannelSymbol, Trade> tradesCallbacks;
 	
 	/**
 	 * The executor service
@@ -69,6 +75,7 @@ public class QuoteManager {
 		this.lastTickTimestamp = new HashMap<>();
 		this.tickerCallbacks = new BiConsumerCallbackManager<>(executorService);
 		this.candleCallbacks = new BiConsumerCallbackManager<>(executorService);
+		this.tradesCallbacks = new BiConsumerCallbackManager<>(executorService);
 	}
 	
 	/**
@@ -153,14 +160,41 @@ public class QuoteManager {
 		
 		return tickerCallbacks.removeCallback(symbol, callback);
 	}
+
+
 	
 	/**
-	 * Process a list with ticks
+	 * Process a list with tick
 	 * @param symbol
 	 * @param ticksBuffer
 	 */
 	public void handleTicksList(final ChannelSymbol symbol, final List<Tick> ticksBuffer) {
 		tickerCallbacks.handleEventsList(symbol, ticksBuffer);
+	}
+
+	/**
+	 * Register a new trade callback
+	 * @param symbol
+	 * @param callback
+	 * @throws APIException
+	 */
+	public void registerTradeCallback(final ChannelSymbol symbol,
+									  final BiConsumer<ChannelSymbol, Trade> callback) throws APIException {
+
+		tradesCallbacks.registerCallback(symbol, callback);
+	}
+
+	/**
+	 * Remove the a trade callback
+	 * @param symbol
+	 * @param callback
+	 * @return
+	 * @throws APIException
+	 */
+	public boolean removeTradeCallback(final ChannelSymbol symbol,
+									  final BiConsumer<ChannelSymbol, Trade> callback) throws APIException {
+
+		return tradesCallbacks.removeCallback(symbol, callback);
 	}
 	
 	/**
@@ -179,27 +213,28 @@ public class QuoteManager {
 	}
 
 	/**
-	 * Subscribe a ticker
+	 * Subscribe channel for a symbol
 	 * @param command
 	 */
-	public void subscribeTicker(AbstractAPICommand command) {
+	public void subscribe(AbstractAPICommand command) {
 		apiBroker.sendCommand(command);
 	}
-	
+
 	/**
-	 * Unsubscribe a ticker
-	 * @param apiCommand
-	 * @param currencyPair
+	 * Unsubscribe channel
+	 * @param command
+	 * @param symbol
 	 */
-	public void unsubscribeTicker(AbstractAPICommand apiCommand, final ChannelSymbol currencyPair) {
-		final int channel = apiBroker.getChannelForSymbol(currencyPair);
-		
+	public void unsubscribe(final AbstractAPICommand command, final ChannelSymbol symbol) {
+
+		final int channel = apiBroker.getChannelForSymbol(symbol);
+
 		if(channel == -1) {
-			throw new IllegalArgumentException("Unknown symbol: " + currencyPair);
+			throw new IllegalArgumentException("Unknown symbol: " + symbol);
 		}
 
-		apiBroker.sendCommand(apiCommand);
-		apiBroker.removeChannelForSymbol(currencyPair);
+		apiBroker.sendCommand(command);
+		apiBroker.removeChannelForSymbol(symbol);
 	}
 	
 	/**
@@ -225,6 +260,15 @@ public class QuoteManager {
 			final BiConsumer<ChannelSymbol, Tick> callback) throws APIException {
 		
 		return candleCallbacks.removeCallback(symbol, callback);
+	}
+
+	/**
+	 * Process a list with trades
+	 * @param symbol
+	 * @param trade
+	 */
+	public void handleTrade(final ChannelSymbol symbol, final Trade trade) {
+		tradesCallbacks.handleEvent(symbol, trade);
 	}
 	
 
@@ -252,29 +296,5 @@ public class QuoteManager {
 		candleCallbacks.handleEvent(currencyPair, tick);
 	}
 
-	/**
-	 * Subscribe candles for a symbol
-	 * @param command
-	 */
-	public void subscribeCandles(AbstractAPICommand command) {
-		apiBroker.sendCommand(command);
-	}
-
-	/**
-	 * Unsubscribe the candles
-	 * @param command
-	 * @param symbol
-	 */
-	public void unsubscribeCandles(final AbstractAPICommand command, final ChannelSymbol symbol) {
-
-		final int channel = apiBroker.getChannelForSymbol(symbol);
-
-		if(channel == -1) {
-			throw new IllegalArgumentException("Unknown symbol: " + symbol);
-		}
-
-		apiBroker.sendCommand(command);
-		apiBroker.removeChannelForSymbol(symbol);
-	}
 	
 }

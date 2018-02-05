@@ -20,11 +20,15 @@ package com.ktoy.exchange.api.callback.api;
 import com.ktoy.exchange.api.ApiBroker;
 import com.ktoy.exchange.api.entity.APIException;
 import com.ktoy.exchange.api.entity.BitfinexOrderType;
+import com.ktoy.exchange.api.entity.BitfinexOrderTypeV2;
 import com.ktoy.exchange.api.entity.Trade;
 import com.ktoy.exchange.api.entity.symbol.BitfinexCurrencyPair;
+import com.ktoy.exchange.api.entity.symbol.ChannelSymbol;
 import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.nio.channels.Channel;
 
 public class TradeHandler implements APICallbackHandler {
 	
@@ -34,21 +38,18 @@ public class TradeHandler implements APICallbackHandler {
 	final static Logger logger = LoggerFactory.getLogger(TradeHandler.class);
 
 	@Override
-	public void handleChannelData(final ApiBroker apiBroker, final JSONArray jsonArray)
-			throws APIException {
+	public void handleChannelData(final ApiBroker apiBroker, final JSONArray jsonArray) {
 
-		logger.info("Got trade callback {}", jsonArray.toString());
-		
-		final JSONArray trade = jsonArray.getJSONArray(2);
-		final String type = jsonArray.getString(1);
-		
+		logger.debug("Got trade callback {}", jsonArray.toString());
+
 		// Executed or update
 		boolean executed = true;
-		if("tu".equals(type)) {
-			executed = false;
-		}
 
-		handleTradeCallback(apiBroker, trade, executed);
+		ChannelSymbol channelSymbol = apiBroker.getFromChannelSymbolMap(jsonArray.getInt(0));
+		final BitfinexCurrencyPair currencyPair =  BitfinexCurrencyPair.fromSymbolString(channelSymbol.toSymbolString());
+		handleTradeCallback(apiBroker, jsonArray, executed, currencyPair);
+
+
 	}
 
 
@@ -56,32 +57,38 @@ public class TradeHandler implements APICallbackHandler {
 	 * Handle a single trade callback
 	 * @param apiBroker
 	 * @param jsonTrade
-	 * @throws APIException 
+	 * @param currencyPair
+	 * @throws APIException
 	 */
 	private void handleTradeCallback(final ApiBroker apiBroker, final JSONArray jsonTrade,
-			final boolean executed) throws APIException {		
-		
-		final Trade trade = new Trade();
-		trade.setExecuted(executed);
-		trade.setApikey(apiBroker.getApiKey());
-		trade.setId(jsonTrade.getLong(0));
-		trade.setCurrency(BitfinexCurrencyPair.fromSymbolString(jsonTrade.getString(1)));
-		trade.setMtsCreate(jsonTrade.getLong(2));
-		trade.setOrderId(jsonTrade.getLong(3));
-		trade.setExecAmount(jsonTrade.getFloat(4));
-		trade.setExecPrice(jsonTrade.getFloat(5));
-		
-		final String orderTypeString = jsonTrade.optString(6, null);
-		
-		if(orderTypeString != null) {
-			trade.setOrderType(BitfinexOrderType.fromString(orderTypeString));
-		}
-		
-		trade.setOrderPrice(jsonTrade.optFloat(7, -1));
-		trade.setMaker(jsonTrade.getInt(8) == 1 ? true : false);
-		trade.setFee(jsonTrade.optFloat(9, -1));
-		trade.setFeeCurrency(jsonTrade.optString(10, ""));
+									 final boolean executed, BitfinexCurrencyPair currencyPair) {
 
-		apiBroker.getTradeManager().updateTrade(trade);
+
+
+		final Trade trade = new Trade();
+//		trade.setExecuted(executed);
+//		trade.setApikey(apiBroker.getApiKey());
+
+		JSONArray subArray = jsonTrade.getJSONArray(2);
+
+		trade.setId(subArray.getLong(0));
+		trade.setCurrency(currencyPair);
+		trade.setMtsCreate(subArray.getLong(1));
+		trade.setOrderId(subArray.getLong(0));
+		trade.setExecAmount(subArray.getFloat(2));
+		trade.setExecPrice(subArray.getFloat(3));
+
+
+		final String orderType = jsonTrade.getString(1);
+		if(orderType != null) {
+			trade.setOrderType(BitfinexOrderTypeV2.fromString(orderType));
+		}
+
+		trade.setOrderPrice(subArray.getFloat(3));
+//		trade.setMaker(jsonTrade.getInt(8) == 1 ? true : false);
+//		trade.setFee(jsonTrade.optFloat(9, -1));
+//		trade.setFeeCurrency(jsonTrade.optString(10, ""));
+
+		apiBroker.getQuoteManager().handleTrade(currencyPair, trade);
 	}
 }

@@ -33,12 +33,7 @@ public class Trade {
 	@Id
 	@GeneratedValue
 	private long id;
-	
-	// Update or execute
-	private boolean executed;
-	
-	private String apikey;
-	
+
 	private BitfinexCurrencyPair currency;
 	private long mtsCreate;
 	private long orderId;
@@ -46,12 +41,9 @@ public class Trade {
 	private float execPrice;
 	
 	@Enumerated(EnumType.STRING)
-	private BitfinexOrderType orderType;	
+	private BitfinexOrderTypeV2 orderType;
 	
 	private float orderPrice;
-	private boolean maker;
-	private float fee;
-	private String feeCurrency;
 
 	/**
 	 * Needed for hibernate
@@ -108,11 +100,11 @@ public class Trade {
 		this.execPrice = execPrice;
 	}
 
-	public BitfinexOrderType getOrderType() {
+	public BitfinexOrderTypeV2 getOrderType() {
 		return orderType;
 	}
 
-	public void setOrderType(final BitfinexOrderType orderType) {
+	public void setOrderType(final BitfinexOrderTypeV2 orderType) {
 		this.orderType = orderType;
 	}
 
@@ -124,52 +116,11 @@ public class Trade {
 		this.orderPrice = orderPrice;
 	}
 
-	public boolean isMaker() {
-		return maker;
-	}
-
-	public void setMaker(final boolean maker) {
-		this.maker = maker;
-	}
-
-	public float getFee() {
-		return fee;
-	}
-
-	public void setFee(final float fee) {
-		this.fee = fee;
-	}
-
-	public String getFeeCurrency() {
-		return feeCurrency;
-	}
-
-	public void setFeeCurrency(final String feeCurrency) {
-		this.feeCurrency = feeCurrency;
-	}
-
-	public String getApikey() {
-		return apikey;
-	}
-
-	public void setApikey(final String apikey) {
-		this.apikey = apikey;
-	}
-
-	public boolean isExecuted() {
-		return executed;
-	}
-
-	public void setExecuted(final boolean executed) {
-		this.executed = executed;
-	}
-
 	@Override
 	public String toString() {
-		return "Trade [id=" + id + ", executed=" + executed + ", apikey=" + apikey + ", currency=" + currency
+		return "Trade [id=" + id + ", currency=" + currency
 				+ ", mtsCreate=" + mtsCreate + ", orderId=" + orderId + ", execAmount=" + execAmount + ", execPrice="
-				+ execPrice + ", orderType=" + orderType + ", orderPrice=" + orderPrice + ", maker=" + maker + ", fee="
-				+ fee + ", feeCurrency=" + feeCurrency + "]";
+				+ execPrice + ", orderType=" + orderType + ", orderPrice=" + orderPrice;
 	}
 
 }

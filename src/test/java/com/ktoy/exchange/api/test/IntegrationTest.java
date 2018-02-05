@@ -221,10 +221,10 @@ public class IntegrationTest {
             orderbookManager.registerCandlestickCallback(symbol, callback);
 
             AbstractAPICommand apiCommand = new BitfinexSubscribeCandlesCommand(symbol);
-            orderbookManager.subscribeCandles(apiCommand);
+            orderbookManager.subscribe(apiCommand);
             latch.await();
 
-            orderbookManager.unsubscribeCandles(apiCommand, symbol);
+            orderbookManager.unsubscribe(apiCommand, symbol);
 
             Assert.assertTrue(orderbookManager.removeCandlestickCallback(symbol, callback));
             Assert.assertFalse(orderbookManager.removeCandlestickCallback(symbol, callback));
@@ -250,7 +250,7 @@ public class IntegrationTest {
         try {
             bitfinexClient.connect();
             //final ChannelSymbol symbol = BitfinexCurrencyPair.BTC_USD;
-            final ChannelSymbol symbol = BitfinexCurrencyPair.BCH_USD;
+            final ChannelSymbol symbol = BitfinexCurrencyPair.BTC_USD;
 
             final QuoteManager orderbookManager = bitfinexClient.getQuoteManager();
 
@@ -261,11 +261,11 @@ public class IntegrationTest {
 
             orderbookManager.registerTickCallback(symbol, callback);
             AbstractAPICommand apiCommand = new BitfinexSubscribeTickerCommand(symbol);
-            orderbookManager.subscribeTicker(apiCommand);
+            orderbookManager.subscribe(apiCommand);
             latch.await();
             Assert.assertTrue(bitfinexClient.isTickerActive(symbol));
 
-            orderbookManager.unsubscribeTicker(apiCommand, symbol);
+            orderbookManager.unsubscribe(apiCommand, symbol);
             Assert.assertFalse(bitfinexClient.isTickerActive(symbol));
 
             Assert.assertTrue(orderbookManager.removeTickCallback(symbol, callback));
@@ -300,12 +300,12 @@ public class IntegrationTest {
             orderbookManager.registerTickCallback(symbol, callback);
 
             AbstractAPICommand apiCommand = new GdaxSubscribeTickerCommand(symbol);
-            orderbookManager.subscribeTicker(apiCommand);
+            orderbookManager.subscribe(apiCommand);
             latch.await();
 
             Assert.assertTrue(client.isTickerActive(symbol));
 
-            orderbookManager.unsubscribeTicker(apiCommand, symbol);
+            orderbookManager.unsubscribe(apiCommand, symbol);
             Assert.assertFalse(client.isTickerActive(symbol));
 
             Assert.assertTrue(orderbookManager.removeTickCallback(symbol, callback));
@@ -358,7 +358,7 @@ public class IntegrationTest {
         final QuoteManager orderbookManager = bitfinexClient.getQuoteManager();
 
         AbstractAPICommand apiCommand = new BitfinexSubscribeTickerCommand(symbol);
-        orderbookManager.subscribeTicker(apiCommand);
+        orderbookManager.subscribe(apiCommand);
         Thread.sleep(1000);
         bitfinexClient.reconnect();
 
@@ -373,7 +373,7 @@ public class IntegrationTest {
         latch.await();
         Assert.assertTrue(bitfinexClient.isTickerActive(symbol));
 
-        orderbookManager.unsubscribeTicker(apiCommand, symbol);
+        orderbookManager.unsubscribe(apiCommand, symbol);
         Assert.assertFalse(bitfinexClient.isTickerActive(symbol));
 
         bitfinexClient.close();

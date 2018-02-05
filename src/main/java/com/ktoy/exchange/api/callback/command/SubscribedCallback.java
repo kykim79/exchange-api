@@ -20,8 +20,7 @@ package com.ktoy.exchange.api.callback.command;
 import com.ktoy.exchange.api.ApiBroker;
 import com.ktoy.exchange.api.entity.OrderbookConfiguration;
 import com.ktoy.exchange.api.entity.RawOrderbookConfiguration;
-import com.ktoy.exchange.api.entity.symbol.BitfinexCandlestickSymbol;
-import com.ktoy.exchange.api.entity.symbol.BitfinexCurrencyPair;
+import com.ktoy.exchange.api.entity.symbol.*;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,15 +41,21 @@ public class SubscribedCallback implements CommandCallbackHandler {
 		switch(channel) {
 		case "ticker":
 			final String symbol = jsonObject.getString("symbol");
-			final BitfinexCurrencyPair currencyPair = BitfinexCurrencyPair.fromSymbolString(symbol);
-			logger.info("Registering symbol {} on channel {}", currencyPair, channelId);
-			apiBroker.addToChannelSymbolMap(channelId, currencyPair);
+			final BitfinexTickerSymbol tickerSymbol = BitfinexTickerSymbol.fromString(symbol);
+			logger.info("Registering symbol {} on channel {}", tickerSymbol, channelId);
+			apiBroker.addToChannelSymbolMap(channelId, tickerSymbol);
 			break;
 		case "candles":
 			final String key = jsonObject.getString("key");
 			logger.info("Registering key {} on channel {}", key, channelId);
 			final BitfinexCandlestickSymbol candleStickSymbol = BitfinexCandlestickSymbol.fromString(key);
 			apiBroker.addToChannelSymbolMap(channelId, candleStickSymbol);
+			break;
+		case "trades":
+			final String symbol2 = jsonObject.getString("symbol");
+			final BitfinexTradesSymbol currencyPair2 = BitfinexTradesSymbol.fromString(symbol2);
+			logger.info("Registering symbol {} on channel {}", currencyPair2, channelId);
+			apiBroker.addToChannelSymbolMap(channelId, currencyPair2);
 			break;
 		case "book":
 			if("R0".equals(jsonObject.getString("prec"))) {

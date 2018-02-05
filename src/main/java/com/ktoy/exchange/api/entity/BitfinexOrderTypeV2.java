@@ -15,31 +15,28 @@
  *    limitations under the License. 
  *    
  *******************************************************************************/
-package com.ktoy.exchange.api.manager;
+package com.ktoy.exchange.api.entity;
 
-import com.ktoy.exchange.api.ApiBroker;
-import com.ktoy.exchange.api.entity.Trade;
+public enum BitfinexOrderTypeV2 implements OrderType {
 
-public class TradeManager extends SimpleCallbackManager<Trade>{
+	SELL("te"), BUY("tu");
 
-	/**
-	 * The bitfinex API broker
-	 */
-	private final ApiBroker apiBroker;
+	private final String bifinexString;
 
-	public TradeManager(final ApiBroker apiBroker) {
-		super(apiBroker.getExecutorService());
-		this.apiBroker = apiBroker;
+	private BitfinexOrderTypeV2(final String bifinexString) {
+		this.bifinexString = bifinexString;
 	}
-	
-	/**
-	 * Update a exchange order
-	 * @param trade
-	 */
-	public void updateTrade(final Trade trade) {
-		//trade.setApikey(apiBroker.getApiKey());
-		notifyCallbacks(trade);
+
+	public String getBifinexString() {
+		return bifinexString;
 	}
-	
+
+	public static BitfinexOrderTypeV2 fromString(String orderTypeText) {
+		for (BitfinexOrderTypeV2 orderType : BitfinexOrderTypeV2.values()) {
+			if (orderType.getBifinexString().equalsIgnoreCase(orderTypeText)) {
+				return orderType;
+			}
+		}
+		throw new IllegalArgumentException("Unable to find order type for: " + orderTypeText);
+	}
 }
-	

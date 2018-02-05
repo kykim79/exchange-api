@@ -97,12 +97,12 @@ public class GdaxTest {
             orderbookManager.registerTickCallback(symbol, callback);
 
             AbstractAPICommand apiCommand = new GdaxSubscribeTickerCommand(symbol);
-            orderbookManager.subscribeTicker(apiCommand);
+            orderbookManager.subscribe(apiCommand);
             latch.await();
 
             Assert.assertTrue(client.isTickerActive(symbol));
 
-            orderbookManager.unsubscribeTicker(apiCommand, symbol);
+            orderbookManager.unsubscribe(apiCommand, symbol);
             Assert.assertFalse(client.isTickerActive(symbol));
 
             Assert.assertTrue(orderbookManager.removeTickCallback(symbol, callback));

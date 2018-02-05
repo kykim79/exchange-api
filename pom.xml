@@ -149,11 +149,6 @@
 			<version>4.1.11.Final</version>
 		</dependency>
 
-		<dependency>
-			<groupId>io.netty</groupId>
-			<artifactId>netty-tcnative-boringssl-static</artifactId>
-		</dependency>
-
         <dependency>
             <groupId>com.github.ccob</groupId>
             <artifactId>bittrex4j</artifactId>

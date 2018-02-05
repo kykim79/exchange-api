@@ -29,7 +29,6 @@ public interface APICallbackHandler {
 	 * @param jsonArray
 	 * @throws APIException 
 	 */
-	public void handleChannelData(final ApiBroker apiBroker, final JSONArray jsonArray)
-			throws APIException;
+	void handleChannelData(final ApiBroker apiBroker, final JSONArray jsonArray) throws APIException;
 
 }

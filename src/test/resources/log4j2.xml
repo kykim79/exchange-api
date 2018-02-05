@@ -39,7 +39,7 @@
     <Loggers>
         <Root level="debug">
             <AppenderRef ref="exchange-api_RollingFile" level="debug"/>
-            <AppenderRef ref="STDOUT" level="debug"/>
+            <AppenderRef ref="STDOUT" level="info"/>
         </Root>
     </Loggers>
 </Configuration>
