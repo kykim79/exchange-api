@@ -1,43 +1,38 @@
 package com.ktoy.exchange.api.test;
 
-import com.cf.client.WSSClient;
-import com.cf.data.handler.poloniex.PoloniexSubscription;
+import info.bitrich.xchangestream.core.StreamingExchange;
+import info.bitrich.xchangestream.core.StreamingExchangeFactory;
+import info.bitrich.xchangestream.poloniex2.PoloniexStreamingExchange;
+import org.knowm.xchange.currency.Currency;
+import org.knowm.xchange.currency.CurrencyPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- * @author David
- */
-public class PoloniexWSSClientExample
-{
-    private final static Logger LOGGER = LoggerFactory.getLogger(PoloniexWSSClientExample.class);
-    private static final String ENDPOINT_URL = "wss://api.poloniex.com";
-    private static final String DEFAULT_REALM = "realm1";
+public class PoloniexManualExample {
+    private static final Logger LOG = LoggerFactory.getLogger(PoloniexManualExample.class);
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
+        CurrencyPair usdtBtc = new CurrencyPair(new Currency("BTC"), new Currency("USDT"));
+        StreamingExchange exchange = StreamingExchangeFactory.INSTANCE.createExchange(PoloniexStreamingExchange.class.getName());
+        exchange.connect().blockingAwait();
+
+        exchange.getStreamingMarketDataService().getOrderBook(usdtBtc).subscribe(orderBook -> {
+            LOG.info("First ask: {}", orderBook.getAsks().get(0));
+            LOG.info("First bid: {}", orderBook.getBids().get(0));
+        }, throwable -> LOG.error("ERROR in getting order book: ", throwable));
+
+        exchange.getStreamingMarketDataService().getTicker(usdtBtc).subscribe(ticker -> {
+            LOG.info("TICKER: {}", ticker);
+        }, throwable -> LOG.error("ERROR in getting ticker: ", throwable));
+
+        exchange.getStreamingMarketDataService().getTrades(usdtBtc).subscribe(trade -> {
+            LOG.info("TRADE: {}", trade);
+        }, throwable -> LOG.error("ERROR in getting trades: ", throwable));
+
         try {
-            new PoloniexWSSClientExample().run();
-
-            //Thread.sleep(50000);
-        } catch (Exception ex) {
-            LOGGER.error("An exception occurred when running PoloniexWSSClientExample - {}", ex.getMessage());
-            System.exit(-1);
-        }
-    }
-
-    public void run() throws Exception
-    {
-//        try (WSSClient wssClient = new WSSClient(ENDPOINT_URL, DEFAULT_REALM)) {
-//            wssClient.subscribe(PoloniexSubscription.TICKER);
-//            wssClient.run(60000);
-//        }
-
-        try (WSSClient poloniexWSSClient = new WSSClient(ENDPOINT_URL, DEFAULT_REALM)) {
-            poloniexWSSClient.subscribe(PoloniexSubscription.TICKER);
-            poloniexWSSClient.subscribe(new PoloniexSubscription("USDT_BTC"));
-            poloniexWSSClient.run(60000);
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }

@@ -35,22 +35,17 @@ public class GdaxSubscribedCallback implements CommandCallbackHandler {
 
 		//final String channel = jsonObject.getString("channel");
 		final String type = jsonObject.getString("type");
-		final GdaxCurrencyPair pair = GdaxCurrencyPair.fromSymbolString(jsonObject.getString("product_id"));
 
+		GdaxCurrencyPair pair = null;
 		switch(type) {
+
 			case "ticker":
-				//final String symbol = jsonObject.getString("symbol");
-				//logger.info("Registering symbol {} on channel {}", currencyPair, channelId);
-				apiBroker.addToChannelSymbolMap(pair.ordinal(), pair);
-				break;
 			case "snapshot":
-				//final String key = jsonObject.getString("key");
-				//logger.info("Registering key {} on channel {}", key, channelId);
-				apiBroker.addToChannelSymbolMap(pair.ordinal(), GdaxCurrencyPair.fromSymbolString(jsonObject.getString("product_id")));
-				break;
+			case "heartbeat":
 			case "l2update":
 				//currencyPair = GdaxCurrencyPair.fromSymbolString(jsonObject.getString("product_id"));
 				//apiBroker.addToChannelSymbolMap(channelId, currencyPair);
+				pair = GdaxCurrencyPair.fromSymbolString(jsonObject.getString("product_id"));
 				apiBroker.addToChannelSymbolMap(pair.ordinal(), pair);
 				break;
 			case "subscriptions":

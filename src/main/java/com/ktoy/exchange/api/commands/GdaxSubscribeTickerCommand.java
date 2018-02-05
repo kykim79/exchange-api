@@ -32,21 +32,23 @@ public class GdaxSubscribeTickerCommand extends AbstractAPICommand {
 
 	@Override
 	public String getCommand(final ApiBroker apiBroker) {
-		final JSONObject subscribeJson = new JSONObject();
-		subscribeJson.put("type", "subscribe");
-		JSONObject obj = new JSONObject();
-		obj.put("name", "ticker");
-		JSONArray array = new JSONArray();
-		array.put(symbol.toSymbolString());
-		obj.put("product_ids", array);
-		JSONArray array1 = new JSONArray();
-		array1.put(obj);
-		subscribeJson.put("channels", array1);
-		JSONArray array2 = new JSONArray();
-		array2.put(symbol.toSymbolString());
-		subscribeJson.put("product_ids", array2);
+		final JSONObject subscribe = new JSONObject();
+		subscribe.put("type", "subscribe");
+		JSONObject ticker = new JSONObject();
+		ticker.put("name", "ticker");
+		JSONArray product_ids = new JSONArray();
+		product_ids.put(symbol.toSymbolString());
+		ticker.put("product_ids", product_ids);
+		JSONArray channels = new JSONArray();
+		channels.put("heartbeat");
+		channels.put(ticker);
+		subscribe.put("channels", channels);
+		JSONArray channels2 = new JSONArray();
+		channels2.put(symbol.toSymbolString());
+
+		subscribe.put("product_ids", channels2);
 				
-		return subscribeJson.toString();
+		return subscribe.toString();
 	}
 
 }

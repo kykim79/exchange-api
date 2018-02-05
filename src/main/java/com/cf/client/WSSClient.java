@@ -40,6 +40,10 @@ public class WSSClient implements AutoCloseable {
         this.subscriptions.put(feedEventHandler.feedName, feedEventHandler);
     }
 
+    public void subscribe(String feedName, Action1 feedEventHandler) {
+        this.subscriptions.put(feedName, feedEventHandler);
+    }
+
     /***
      *
      * @param runTimeInMillis The subscription time expressed in milliseconds. The minimum runtime is 1 minute. 

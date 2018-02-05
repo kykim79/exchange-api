@@ -3,11 +3,10 @@ package com.ktoy.exchange.api.test;
 import com.binance.api.client.BinanceApiClientFactory;
 import com.binance.api.client.BinanceApiWebSocketClient;
 import com.binance.api.client.domain.market.CandlestickInterval;
-import com.sun.corba.se.impl.naming.cosnaming.InternalBindingValue;
 
 /**
  * All market tickers channel examples.
- *
+ * <p>
  * It illustrates how to create a stream to obtain all market tickers.
  */
 public class BinanceTickersExample {

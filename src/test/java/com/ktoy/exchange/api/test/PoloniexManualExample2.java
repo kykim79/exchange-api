@@ -1,39 +1,44 @@
 package com.ktoy.exchange.api.test;
 
-import info.bitrich.xchangestream.core.StreamingExchange;
-import info.bitrich.xchangestream.core.StreamingExchangeFactory;
 
-import info.bitrich.xchangestream.poloniex2.PoloniexStreamingExchange;
-import org.knowm.xchange.currency.Currency;
-import org.knowm.xchange.currency.CurrencyPair;
+import com.cf.client.WSSClient;
+import com.cf.data.handler.poloniex.PoloniexSubscription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PoloniexManualExample {
-    private static final Logger LOG = LoggerFactory.getLogger(PoloniexManualExample.class);
+public class PoloniexManualExample2 {
+    private static final Logger LOG = LoggerFactory.getLogger(PoloniexManualExample2.class);
 
     public static void main(String[] args) {
-        CurrencyPair usdtBtc = new CurrencyPair(new Currency("BTC"), new Currency("USDT"));
-        StreamingExchange exchange = StreamingExchangeFactory.INSTANCE.createExchange(PoloniexStreamingExchange.class.getName());
-        exchange.connect().blockingAwait();
+        try (WSSClient wssClient = new WSSClient("wss://api.poloniex.com", "realm1")) {
+            wssClient.subscribe(PoloniexSubscription.TICKER);
+            //wssClient.subscribe(new PoloniexSubscription("BTC_USDT"));
+            //wssClient.subscribe("BTC_XML", new Subscription("BTC_XMR"));
+            wssClient.run(60000);
 
-        exchange.getStreamingMarketDataService().getOrderBook(usdtBtc).subscribe(orderBook -> {
-            LOG.info("First ask: {}", orderBook.getAsks().get(0));
-            LOG.info("First bid: {}", orderBook.getBids().get(0));
-        }, throwable -> LOG.error("ERROR in getting order book: ", throwable));
-
-        exchange.getStreamingMarketDataService().getTicker(usdtBtc).subscribe(ticker -> {
-            LOG.info("TICKER: {}", ticker);
-        }, throwable -> LOG.error("ERROR in getting ticker: ", throwable));
-
-        exchange.getStreamingMarketDataService().getTrades(usdtBtc).subscribe(trade -> {
-            LOG.info("TRADE: {}", trade);
-        }, throwable -> LOG.error("ERROR in getting trades: ", throwable));
-
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
+            //Thread.sleep(100000);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+//    static class Subscription implements Action1<PubSubData> {
+//        public static final Subscription TICKER = new Subscription("ticker");
+//
+//        protected final Logger LOG = LoggerFactory.getLogger(Subscription.class);
+//        public final String feedName;
+//
+//        public Subscription(String feedName) {
+//            this.feedName = feedName;
+//        }
+//
+//        @Override
+//        public void call(PubSubData event) {
+//            try {
+//                LOG.trace("{}", event.arguments());
+//            } catch (Exception ex) {
+//                LOG.warn("Exception processing event data - " + ex.getMessage());
+//            }
+//        }
+//    }
 }

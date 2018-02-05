@@ -39,10 +39,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 import java.net.URI;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -168,6 +165,9 @@ public class GdaxApiBroker implements Closeable, ApiBroker {
 	 */
 	private final ExecutorService executorService;
 
+
+	private Set<String> commandSet;
+
 	/**
 	 * The Logger
 	 */
@@ -197,6 +197,8 @@ public class GdaxApiBroker implements Closeable, ApiBroker {
 
 		setupChannelHandler();
 		setupCommandCallbacks();
+
+		commandSet = new HashSet<>();
 	}
 
 	/**
@@ -324,10 +326,10 @@ public class GdaxApiBroker implements Closeable, ApiBroker {
 		//logger.debug("Got message: {}", message);
 
 		final JSONObject jsonObject = new JSONObject(new JSONTokener(message));
-
-		if(jsonObject.has("product_id")) {
-			GdaxCurrencyPair pair = GdaxCurrencyPair.fromSymbolString(jsonObject.getString("product_id"));
-			if(!isTickerActive(pair)) {
+		String type = jsonObject.getString("type");
+		if(commandCallbacks.containsKey(type)) {
+			if(!commandSet.contains(type)) {
+				commandSet.add(type);
 				handleCommandCallback(jsonObject);
 			} else {
 				handleChannelCallback(jsonObject);
@@ -335,7 +337,21 @@ public class GdaxApiBroker implements Closeable, ApiBroker {
 		} else {
 			logger.error("Got unknown callback: {}", message);
 		}
+
 	}
+
+//	private GdaxCurrencyPair getPair(JSONObject jsonObject) {
+//		GdaxCurrencyPair pair = null;
+//		final String type = jsonObject.getString("type");
+//		if(type.equalsIgnoreCase("subscriptions")) {
+//			JSONArray jsonArray = jsonObject.getJSONArray("channels");
+//			JSONObject o = jsonArray.getJSONObject(0);;
+//			pair = GdaxCurrencyPair.fromSymbolString(o.getJSONArray("product_ids").getString(0));
+//		} else {
+//			pair = GdaxCurrencyPair.fromSymbolString(jsonObject.getString("product_id"));
+//		}
+//		return pair;
+//	}
 
 	/**
 	 * Handle a command callback
@@ -417,7 +433,7 @@ public class GdaxApiBroker implements Closeable, ApiBroker {
 		String type = jsonObject.getString("type");
 		if(type.equalsIgnoreCase("error")) {
 			logger.error("Got Error message: {}", jsonObject.getString("message"));
-		} else {
+		} else if (!type.equalsIgnoreCase("subscriptions")){
 
 			final APICallbackHandler channelHandlerCallback = channelHandler.get(type);
 
@@ -426,6 +442,8 @@ public class GdaxApiBroker implements Closeable, ApiBroker {
 				jsonArray.put(jsonObject);
 				channelHandlerCallback.handleChannelData(this, jsonArray);
 			} catch (APIException e) {
+				logger.error("Got exception while handling callback", e);
+			} catch (Exception e) {
 				logger.error("Got exception while handling callback", e);
 			}
 		}

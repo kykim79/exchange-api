@@ -141,35 +141,17 @@
 			<groupId>ws.wamp.jawampa</groupId>
 			<artifactId>jawampa-netty</artifactId>
 			<version>0.5.0</version>
-			<exclusions>
-				<exclusion>
-					<groupId>io.netty</groupId>
-					<artifactId>netty-buffer</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.netty</groupId>
-					<artifactId>netty-codec</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.netty</groupId>
-					<artifactId>netty-codec-http</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
+
 		<dependency>
 			<groupId>io.netty</groupId>
-			<artifactId>netty-buffer</artifactId>
-			<version>4.1.12.Final</version>
+			<artifactId>netty-all</artifactId>
+			<version>4.1.11.Final</version>
 		</dependency>
+
 		<dependency>
 			<groupId>io.netty</groupId>
-			<artifactId>netty-codec</artifactId>
-			<version>4.1.12.Final</version>
-		</dependency>
-		<dependency>
-			<groupId>io.netty</groupId>
-			<artifactId>netty-codec-http</artifactId>
-			<version>4.1.12.Final</version>
+			<artifactId>netty-tcnative-boringssl-static</artifactId>
 		</dependency>
 
         <dependency>
@@ -184,6 +166,38 @@
 			<version>1.7.0</version>
 		</dependency>
 
+		<dependency>
+			<groupId>info.bitrich.xchange-stream</groupId>
+			<artifactId>xchange-stream-core</artifactId>
+			<version>4.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.knowm.xchange</groupId>
+			<artifactId>xchange-okcoin</artifactId>
+			<version>4.3.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.knowm.xchange</groupId>
+			<artifactId>xchange-poloniex</artifactId>
+			<version>4.3.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.8.6</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.akarnokd</groupId>
+			<artifactId>rxjava2-interop</artifactId>
+			<version>0.8.3</version>
+			<exclusions>
+				<exclusion>
+					<groupId>io.reactivex.rxjava2</groupId>
+					<artifactId>rxjava</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 
 		<!-- Testing dependencies -->
 		<dependency>
