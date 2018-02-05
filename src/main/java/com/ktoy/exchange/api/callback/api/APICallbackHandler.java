@@ -1,0 +1,35 @@
+/*******************************************************************************
+ *
+ *    Copyright (C) 2018 Kim Kwon Young
+ *  
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *  
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *  
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License. 
+ *    
+ *******************************************************************************/
+package com.ktoy.exchange.api.callback.api;
+
+import com.ktoy.exchange.api.ApiBroker;
+import com.ktoy.exchange.api.entity.APIException;
+import org.json.JSONArray;
+
+public interface APICallbackHandler {
+	
+	/**
+	 * Handle data for the channel
+	 * @param apiBroker
+	 * @param jsonArray
+	 * @throws APIException 
+	 */
+	public void handleChannelData(final ApiBroker apiBroker, final JSONArray jsonArray)
+			throws APIException;
+
+}

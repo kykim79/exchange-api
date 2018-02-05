@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   
+       Copyright (C) 2018 Kim Kwon Young
+     
+       Licensed under the Apache License, Version 2.0 (the "License");
+       you may not use this file except in compliance with the License.
+       You may obtain a copy of the License at
+     
+         http://www.apache.org/licenses/LICENSE-2.0
+     
+       Unless required by applicable law or agreed to in writing, software
+       distributed under the License is distributed on an "AS IS" BASIS,
+       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+       See the License for the specific language governing permissions and
+       limitations under the License. 
+       
+ -->
+
+<Configuration status="warn" name="exchange-api" packages="">
+    <Appenders>
+        <RollingFile name="exchange-api_RollingFile" fileName="/tmp/exchange-api.log"
+                     filePattern="exchange-api.%d{MM-dd-yyyy}-%i.log.gz">
+            <PatternLayout>
+                <Pattern>%-4r [%t] %d %-5p %c{1} %M() - %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="90"/>
+        </RollingFile>
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout>
+                <Pattern>%-4r [%t] %d %-5p %c{1} %M() - %m%n</Pattern>
+            </PatternLayout>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Root level="debug">
+            <AppenderRef ref="exchange-api_RollingFile" level="debug"/>
+            <AppenderRef ref="STDOUT" level="debug"/>
+        </Root>
+    </Loggers>
+</Configuration>
