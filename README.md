@@ -1,6 +1,12 @@
 This project contains clients for multiple exchanges 
 * the [Bitfinex WebSocket API (v2)](https://docs.bitfinex.com/v2/reference). 
 * the [GDAX WebSocket API](https://docs.gdax.com/#websocket-feed).
+* the [Bitflyer Realtime API](https://lightning.bitflyer.jp/docs/api#realtime-api)
+* the [Binance WebSocket API](https://github.com/binance-exchange/binance-official-api-docs)
+* the [Bitstamp WebSocket API](https://www.bitstamp.net/websocket/)
+* the [Bittrex WebSocket API](https://github.com/CCob/bittrex4j)
+* the [Poloniex WebSocket API](https://poloniex.com/support/api/)
+* the [OkCoin WebSocket API](https://github.com/OKCoin/websocket)
 
 At the moment, candles, ticks and (raw) orderbook streams are supported. In addition, orders, and wallets are also implemented.
 

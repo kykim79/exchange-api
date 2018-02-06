@@ -37,9 +37,12 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Root level="debug">
+        <Root level="info">
             <AppenderRef ref="exchange-api_RollingFile" level="debug"/>
             <AppenderRef ref="STDOUT" level="info"/>
         </Root>
+        <Logger name="com.github.ccob.bittrex4j" level="info" additivity="false">
+            <!--<AppenderRef ref="STDOUT"/>-->
+        </Logger>
     </Loggers>
 </Configuration>
