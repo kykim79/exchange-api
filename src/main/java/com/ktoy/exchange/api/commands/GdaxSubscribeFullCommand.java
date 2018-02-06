@@ -22,32 +22,26 @@ import com.ktoy.exchange.api.entity.symbol.ChannelSymbol;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class GdaxSubscribeTickerCommand extends AbstractAPICommand {
+public class GdaxSubscribeFullCommand extends AbstractAPICommand {
 
 	private final ChannelSymbol symbol;
 
-	public GdaxSubscribeTickerCommand(final ChannelSymbol symbol) {
+	public GdaxSubscribeFullCommand(final ChannelSymbol symbol) {
 		this.symbol = symbol;
 	}
 
 	@Override
 	public String getCommand(final ApiBroker apiBroker) {
-		final JSONObject subscribe = new JSONObject();
-		subscribe.put("type", "subscribe");
-		JSONObject ticker = new JSONObject();
-		ticker.put("name", "ticker");
+		final JSONObject subscribeJson = new JSONObject();
+		subscribeJson.put("type", "subscribe");
 		JSONArray product_ids = new JSONArray();
 		product_ids.put(symbol.toSymbolString());
-		ticker.put("product_ids", product_ids);
+		subscribeJson.put("product_ids", product_ids);
 		JSONArray channels = new JSONArray();
-		channels.put("heartbeat");
-		channels.put(ticker);
-		subscribe.put("channels", channels);
-		JSONArray channels2 = new JSONArray();
-		channels2.put(symbol.toSymbolString());
-		subscribe.put("product_ids", channels2);
+		channels.put("full");
+		subscribeJson.put("channels", channels);
 				
-		return subscribe.toString();
+		return subscribeJson.toString();
 	}
 
 }

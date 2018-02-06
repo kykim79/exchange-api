@@ -113,50 +113,6 @@ public class IntegrationTest {
     }
 
     /**
-     * Test the orderbook stream
-     */
-    @Test//(timeout=10000)
-    public void testOrderbookStreamGdax() {
-        final GdaxApiBroker apiBroker = new GdaxApiBroker();
-
-        // Await at least 10 callbacks
-        final CountDownLatch latch = new CountDownLatch(10);
-        try {
-            apiBroker.connect();
-            final OrderbookConfiguration orderbookConfiguration = new OrderbookConfiguration(
-                    GdaxCurrencyPair.BTC_USD, OrderBookPrecision.P0, OrderBookFrequency.F0, 25);
-
-            final OrderbookManager orderbookManager = apiBroker.getOrderbookManager();
-
-            final BiConsumer<OrderbookConfiguration, OrderbookEntry> callback = (c, o) -> {
-//				Assert.assertTrue(o.getAmount() != 0);
-//				Assert.assertTrue(o.getPrice() != 0);
-//				Assert.assertTrue(o.getCount() != 0);
-//				Assert.assertTrue(o.toString().length() > 0);
-                System.out.println(o);
-                latch.countDown();
-            };
-
-            orderbookManager.registerOrderbookCallback(orderbookConfiguration, callback);
-            orderbookManager.subscribeOrderbook(new GdaxSubscribeOrderbookCommand(GdaxCurrencyPair.BTC_USD));
-            latch.await();
-
-            AbstractAPICommand apiCommand = new GdaxUnsubscribeChannelCommand(GdaxCurrencyPair.BTC_USD);
-            orderbookManager.unsubscribeOrderbook(apiCommand, orderbookConfiguration);
-
-            Assert.assertTrue(orderbookManager.removeOrderbookCallback(orderbookConfiguration, callback));
-            Assert.assertFalse(orderbookManager.removeOrderbookCallback(orderbookConfiguration, callback));
-
-        } catch (Exception e) {
-            // Should not happen
-            e.printStackTrace();
-            Assert.assertTrue(false);
-        } finally {
-            apiBroker.close();
-        }
-    }
-
-    /**
      * Test the raw orderbook stream
      */
     @Test(timeout = 10000)
@@ -277,46 +233,6 @@ public class IntegrationTest {
             Assert.assertTrue(false);
         } finally {
             bitfinexClient.close();
-        }
-    }
-
-    @Test(timeout = 50000)
-    public void testTickerStreamGDax() {
-        final ApiBroker client = new GdaxApiBroker();
-
-        // Await at least 2 callbacks
-        final CountDownLatch latch = new CountDownLatch(50);
-        try {
-            client.connect();
-            final ChannelSymbol symbol = GdaxCurrencyPair.BTC_USD;
-
-            final QuoteManager orderbookManager = client.getQuoteManager();
-
-            final BiConsumer<ChannelSymbol, Tick> callback = (c, o) -> {
-                System.out.println(o);
-                latch.countDown();
-            };
-
-            orderbookManager.registerTickCallback(symbol, callback);
-
-            AbstractAPICommand apiCommand = new GdaxSubscribeTickerCommand(symbol);
-            orderbookManager.subscribe(apiCommand);
-            latch.await();
-
-            Assert.assertTrue(client.isTickerActive(symbol));
-
-            orderbookManager.unsubscribe(apiCommand, symbol);
-            Assert.assertFalse(client.isTickerActive(symbol));
-
-            Assert.assertTrue(orderbookManager.removeTickCallback(symbol, callback));
-            Assert.assertFalse(orderbookManager.removeTickCallback(symbol, callback));
-
-        } catch (Exception e) {
-            // Should not happen
-            e.printStackTrace();
-            Assert.assertTrue(false);
-        } finally {
-            client.close();
         }
     }
 

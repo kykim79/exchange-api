@@ -18,7 +18,7 @@
 package com.ktoy.exchange.api.test;
 
 import com.ktoy.exchange.api.BitfinexApiBroker;
-import com.ktoy.exchange.api.callback.api.TradeHandler;
+import com.ktoy.exchange.api.callback.api.BitfinexTradeHandler;
 import com.ktoy.exchange.api.entity.APIException;
 import com.ktoy.exchange.api.entity.BitfinexOrderType;
 import com.ktoy.exchange.api.entity.ConnectionCapabilities;
@@ -56,7 +56,7 @@ public class TradeManagerTest {
     public void testTradeChannelHandler1() throws APIException, InterruptedException {
         final String jsonString = "[0,\"te\",[106655593,\"tBTCUSD\",1512247319827,5691690918,-0.002,10894,null,null,-1]]";
         final JSONArray jsonArray = new JSONArray(jsonString);
-        final TradeHandler tradeHandler = new TradeHandler();
+        final BitfinexTradeHandler tradeHandler = new BitfinexTradeHandler();
         final BitfinexApiBroker bitfinexApiBroker = buildMockedBitfinexConnection();
 
         final CountDownLatch latch = new CountDownLatch(1);
@@ -97,7 +97,7 @@ public class TradeManagerTest {
         final String jsonString = "[0,\"tu\",[106655593,\"tBTCUSD\",1512247319827,5691690918,-0.002,10894,\"EXCHANGE MARKET\",10894,-1,-0.0392184,\"USD\"]]";
 
         final JSONArray jsonArray = new JSONArray(jsonString);
-        final TradeHandler tradeHandler = new TradeHandler();
+        final BitfinexTradeHandler tradeHandler = new BitfinexTradeHandler();
         final BitfinexApiBroker bitfinexApiBroker = buildMockedBitfinexConnection();
 
         final CountDownLatch latch = new CountDownLatch(1);

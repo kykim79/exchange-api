@@ -49,7 +49,7 @@ public class BitstampExample {
         // The state change listener is notified when the connection has been re-established,
         // the subscription to "my-channel" and binding on "my-event" still exist.
 
-        Thread.sleep(20000);
+        Thread.sleep(100000);
     }
 }
 

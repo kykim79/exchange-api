@@ -2,8 +2,8 @@ package com.ktoy.exchange.api.test;
 
 import com.ktoy.exchange.api.BitfinexApiBroker;
 import com.ktoy.exchange.api.commands.AbstractAPICommand;
-import com.ktoy.exchange.api.commands.BitfinexSubscribeTickerCommand;
 import com.ktoy.exchange.api.commands.BitfinexSubscribeTradeCommand;
+import com.ktoy.exchange.api.entity.BitfinexTrade;
 import com.ktoy.exchange.api.entity.Trade;
 import com.ktoy.exchange.api.entity.symbol.BitfinexCurrencyPair;
 import com.ktoy.exchange.api.entity.symbol.ChannelSymbol;

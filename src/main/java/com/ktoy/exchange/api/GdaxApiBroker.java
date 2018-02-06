@@ -210,6 +210,9 @@ public class GdaxApiBroker implements Closeable, ApiBroker {
 
 		// order book
 		channelHandler.put("l2update", new GdaxOrderHandler());
+
+		// trade
+		channelHandler.put("match", new GdaxTradeHandler());
 	}
 	
 	/**
@@ -224,6 +227,12 @@ public class GdaxApiBroker implements Closeable, ApiBroker {
 		commandCallbacks.put("heartbeat", new GdaxSubscribedCallback());
 		commandCallbacks.put("unsubscribe", new UnsubscribedCallback());
 		commandCallbacks.put("error", new ErrorCommandCallback());
+		commandCallbacks.put("received", new GdaxSubscribedCallback());
+		commandCallbacks.put("open", new GdaxSubscribedCallback());
+		commandCallbacks.put("done", new GdaxSubscribedCallback());
+		commandCallbacks.put("match", new GdaxSubscribedCallback());
+		commandCallbacks.put("change", new GdaxSubscribedCallback());
+		commandCallbacks.put("activate", new GdaxSubscribedCallback());
 	}
 	
 	/**
@@ -435,6 +444,10 @@ public class GdaxApiBroker implements Closeable, ApiBroker {
 			logger.error("Got Error message: {}", jsonObject.getString("message"));
 		} else if (!type.equalsIgnoreCase("subscriptions")){
 
+			if(!channelHandler.containsKey(type)) {
+				logger.debug("Unsupported channel: {}",type);
+				return;
+			}
 			final APICallbackHandler channelHandlerCallback = channelHandler.get(type);
 
 			try {

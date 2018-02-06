@@ -39,8 +39,8 @@ public class BittrexExample {
                             state.getMarketName(), type, e.getType(), e.getRate().toString(), e.getQuantity().toString())));
 
             Function3<String, Fill[], UpdateExchangeState> fillFunc = (type, fills, state) ->
-                    Arrays.stream(fills).forEach(e -> System.out.println(String.format("[%s, %s] price: %f, quantity: %f",
-                            state.getMarketName(), e.getOrderType(), e.getPrice(), e.getQuantity())));
+                    Arrays.stream(fills).forEach(e -> System.out.println(String.format("%s [%s, %s] price: %f, quantity: %f",
+                            e.getTimeStamp(), state.getMarketName(), e.getOrderType(), e.getPrice(), e.getQuantity())));
 
             bittrexExchange.onUpdateExchangeState((UpdateExchangeState updateExchangeState) -> {
 //                double volume = Arrays.stream(updateExchangeState.getFills())

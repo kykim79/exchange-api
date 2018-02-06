@@ -18,9 +18,9 @@
 package com.ktoy.exchange.api.manager;
 
 import com.ktoy.exchange.api.ApiBroker;
-import com.ktoy.exchange.api.entity.Trade;
+import com.ktoy.exchange.api.entity.BitfinexTrade;
 
-public class TradeManager extends SimpleCallbackManager<Trade>{
+public class TradeManager extends SimpleCallbackManager<BitfinexTrade>{
 
 	/**
 	 * The bitfinex API broker
@@ -36,7 +36,7 @@ public class TradeManager extends SimpleCallbackManager<Trade>{
 	 * Update a exchange order
 	 * @param trade
 	 */
-	public void updateTrade(final Trade trade) {
+	public void updateTrade(final BitfinexTrade trade) {
 		//trade.setApikey(apiBroker.getApiKey());
 		notifyCallbacks(trade);
 	}

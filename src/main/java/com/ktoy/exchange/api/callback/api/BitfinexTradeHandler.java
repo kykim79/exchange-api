@@ -19,23 +19,20 @@ package com.ktoy.exchange.api.callback.api;
 
 import com.ktoy.exchange.api.ApiBroker;
 import com.ktoy.exchange.api.entity.APIException;
-import com.ktoy.exchange.api.entity.BitfinexOrderType;
 import com.ktoy.exchange.api.entity.BitfinexOrderTypeV2;
-import com.ktoy.exchange.api.entity.Trade;
+import com.ktoy.exchange.api.entity.BitfinexTrade;
 import com.ktoy.exchange.api.entity.symbol.BitfinexCurrencyPair;
 import com.ktoy.exchange.api.entity.symbol.ChannelSymbol;
 import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.channels.Channel;
-
-public class TradeHandler implements APICallbackHandler {
+public class BitfinexTradeHandler implements APICallbackHandler {
 	
 	/**
 	 * The Logger
 	 */
-	final static Logger logger = LoggerFactory.getLogger(TradeHandler.class);
+	final static Logger logger = LoggerFactory.getLogger(BitfinexTradeHandler.class);
 
 	@Override
 	public void handleChannelData(final ApiBroker apiBroker, final JSONArray jsonArray) {
@@ -65,7 +62,7 @@ public class TradeHandler implements APICallbackHandler {
 
 
 
-		final Trade trade = new Trade();
+		final BitfinexTrade trade = new BitfinexTrade();
 //		trade.setExecuted(executed);
 //		trade.setApikey(apiBroker.getApiKey());
 

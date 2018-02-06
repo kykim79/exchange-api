@@ -226,9 +226,9 @@ public class BitfinexApiBroker implements Closeable, ApiBroker {
 		// Order cancelation
 		channelHandler.put("oc", new BitfinexOrderHandler());
 		// Trade executed
-		channelHandler.put("te", new TradeHandler());
+		channelHandler.put("te", new BitfinexTradeHandler());
 		// Trade update
-		channelHandler.put("tu", new TradeHandler());
+		channelHandler.put("tu", new BitfinexTradeHandler());
 		// General notification 
 		channelHandler.put("n", new NotificationHandler());
 	}

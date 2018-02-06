@@ -16,14 +16,14 @@ public class PoloniexManualExample {
         StreamingExchange exchange = StreamingExchangeFactory.INSTANCE.createExchange(PoloniexStreamingExchange.class.getName());
         exchange.connect().blockingAwait();
 
-        exchange.getStreamingMarketDataService().getOrderBook(usdtBtc).subscribe(orderBook -> {
-            LOG.info("First ask: {}", orderBook.getAsks().get(0));
-            LOG.info("First bid: {}", orderBook.getBids().get(0));
-        }, throwable -> LOG.error("ERROR in getting order book: ", throwable));
-
-        exchange.getStreamingMarketDataService().getTicker(usdtBtc).subscribe(ticker -> {
-            LOG.info("TICKER: {}", ticker);
-        }, throwable -> LOG.error("ERROR in getting ticker: ", throwable));
+//        exchange.getStreamingMarketDataService().getOrderBook(usdtBtc).subscribe(orderBook -> {
+//            LOG.info("First ask: {}", orderBook.getAsks().get(0));
+//            LOG.info("First bid: {}", orderBook.getBids().get(0));
+//        }, throwable -> LOG.error("ERROR in getting order book: ", throwable));
+//
+//        exchange.getStreamingMarketDataService().getTicker(usdtBtc).subscribe(ticker -> {
+//            LOG.info("TICKER: {}", ticker);
+//        }, throwable -> LOG.error("ERROR in getting ticker: ", throwable));
 
         exchange.getStreamingMarketDataService().getTrades(usdtBtc).subscribe(trade -> {
             LOG.info("TRADE: {}", trade);
